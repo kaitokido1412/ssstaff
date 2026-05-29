@@ -140,7 +140,7 @@ input[type=range]:disabled{opacity:.4}
   </div>
   <div class="sr">
     <div class="st"><span>반경 조절</span><span id="sv">500 m</span></div>
-    <input type="range" id="sl" min="90" max="50000" step="10" value="500" oninput="onSl(this.value)">
+    <input type="range" id="sl" min="50" max="50000" step="10" value="500" oninput="onSl(this.value)">
   </div>
   <div class="br">
     <div class="ps" id="ps"></div>
@@ -442,7 +442,7 @@ function place(pos){
   circ=new naver.maps.Circle({map,center:pos,radius:rM,strokeColor:'#03C75A',strokeWeight:2,strokeStyle:'dash',strokeOpacity:.9,fillColor:'#03C75A',fillOpacity:.08});
   eM=new naver.maps.Marker({position:eLL(pos,rM),map,icon:{content:'<div style="width:16px;height:16px;background:#fff;border:3px solid #2563eb;border-radius:50%;box-shadow:0 0 0 3px rgba(37,99,235,.3);transform:translate(-8px,-8px);cursor:ew-resize"></div>',anchor:new naver.maps.Point(0,0)},draggable:true});
   naver.maps.Event.addListener(cM,'drag',e=>{if(isLocked)return;circ.setCenter(e.coord);eM.setPosition(eLL(e.coord,rM));upd(e.coord);updateMyLine();});
-  naver.maps.Event.addListener(eM,'drag',e=>{if(isLocked)return;const c=cM.getPosition();rM=Math.max(90,Math.min(50000,Math.round(calcDist(c,e.coord))));circ.setRadius(rM);document.getElementById('sl').value=rM;upd(c);});
+  naver.maps.Event.addListener(eM,'drag',e=>{if(isLocked)return;const c=cM.getPosition();rM=Math.max(50,Math.min(50000,Math.round(calcDist(c,e.coord))));circ.setRadius(rM);document.getElementById('sl').value=rM;upd(c);});
   upd(pos);updateMyLine();
 }
 naver.maps.Event.addListener(map,'click',e=>{if(!isLocked)place(e.coord);});
@@ -488,8 +488,8 @@ function upd(p){
 }
 function onSl(v){if(isLocked)return;rM=parseInt(v);document.getElementById('sv').textContent=fmtDist(rM);if(circ){circ.setRadius(rM);eM.setPosition(eLL(cM.getPosition(),rM));upd(cM.getPosition());}}
 
-// ✅ 프리셋 버튼 90m·100m 추가
-[{l:'90m',v:90},{l:'100m',v:100},{l:'200m',v:200},{l:'500m',v:500},{l:'1km',v:1000},{l:'3km',v:3000},{l:'5km',v:5000},{l:'10km',v:10000}].forEach(p=>{
+// ✅ 프리셋 버튼 50m·100m 추가
+[{l:'50m',v:50},{l:'100m',v:100},{l:'200m',v:200},{l:'500m',v:500},{l:'1km',v:1000},{l:'3km',v:3000},{l:'5km',v:5000},{l:'10km',v:10000}].forEach(p=>{
   const b=document.createElement('button');b.className='pb';b.textContent=p.l;
   b.onclick=()=>{if(isLocked)return;document.querySelectorAll('.pb').forEach(x=>x.classList.remove('on'));b.classList.add('on');rM=p.v;document.getElementById('sl').value=p.v;if(circ){circ.setRadius(p.v);eM.setPosition(eLL(cM.getPosition(),p.v));upd(cM.getPosition());}else document.getElementById('sv').textContent=fmtDist(p.v);};
   document.getElementById('ps').appendChild(b);
